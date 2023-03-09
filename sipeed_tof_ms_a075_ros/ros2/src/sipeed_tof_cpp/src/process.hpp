@@ -323,9 +323,9 @@ public:
                 auto point=map1.at<Point_<int16_t>>(y,x);
                 if(point.x<0||point.x>=320||point.y<0||point.y>=240)
                     continue;
-                vail_map.at<uint8_t>(point)=1;
-                deepmap_x.at<int16_t >(point)=point.x;
-                deepmap_y.at<int16_t >(point)=point.y;
+                vail_map.at<uint8_t>(y,x)=1;
+                deepmap_x.at<int16_t >(y,x)=point.x;
+                deepmap_y.at<int16_t >(y,x)=point.y;
             }
 //        std::cout<<deepmap_x<< std::endl;
 //        std::cout<<deepmap_y<< std::endl;
