@@ -12,11 +12,11 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  message_generation
 )
-find_package(OpenCV  REQUIRED)
+
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
+find_package(OpenCV REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -106,8 +106,8 @@ find_package(OpenCV  REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES sipeed_tof_cpp
- CATKIN_DEPENDS message_runtime cv_bridge roscpp rospy std_msgs
+#  LIBRARIES sipeed_tof_ms_a010
+  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -120,11 +120,13 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/sipeed_tof_cpp.cpp
+#   src/${PROJECT_NAME}/sipeed_tof_ms_a010.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -135,21 +137,20 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/sipeed_tof_cpp_node.cpp)
-add_executable(a010_publisher src/main.cc src/cJSON.c src/serial.cc src/frame_handle.cc)
-# target_link_libraries(a010_publisher)
+add_executable(${PROJECT_NAME}_node src/sipeed_tof_ms_a010_node.cc src/cJSON.c src/frame_handle.cc)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
+set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(a010_publisher ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(a010_publisher
+target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
 )
 
@@ -169,7 +170,7 @@ target_link_libraries(a010_publisher
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS a010_publisher
+install(TARGETS ${PROJECT_NAME}_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -200,7 +201,7 @@ install(TARGETS a010_publisher
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_sipeed_tof_cpp.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_sipeed_tof_ms_a010.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

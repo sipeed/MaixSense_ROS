@@ -30,26 +30,27 @@ typedef struct {
   uint8_t isp_version;
   uint8_t reserved3;  // fixed to 0xff
 } __attribute__((packed)) frame_head_t;
+static_assert(FRAME_HEAD_SIZE == sizeof(frame_head_t), "err");
 
 typedef struct {
   frame_head_t frame_head;
   uint8_t payload[];
 } __attribute__((packed)) frame_t;
 
-// typedef struct {
-//   uint8_t cali_mode;  // 0:Normal, 1:Fisheye
-//   uint32_t fx;        // fixpoint: u14p18
-//   uint32_t fy;        // fixpoint: u14p18
-//   uint32_t u0;        // fixpoint: u14p18
-//   uint32_t v0;        // fixpoint: u14p18
-//   uint32_t k1;        // fixpoint: s5p27
-//   uint32_t k2;        // fixpoint: s5p27
-//   uint32_t k3;        // fixpoint: s5p27
-//   uint32_t k4_p1;     // fixpoint: s5p27, normal mode is k4, fisheye mode is p1
-//   uint32_t k5_p2;     // fixpoint: s5p27, normal mode is k5 or unused, fisheye
-//                       // mode is p2
-//   uint32_t skew;      // fixpoint: s8p24
-// } __attribute__((packed)) LensCoeff_t;
+typedef struct {
+  uint8_t cali_mode;  // 0:Normal, 1:Fisheye
+  uint32_t fx;        // fixpoint: u14p18
+  uint32_t fy;        // fixpoint: u14p18
+  uint32_t u0;        // fixpoint: u14p18
+  uint32_t v0;        // fixpoint: u14p18
+  uint32_t k1;        // fixpoint: s5p27
+  uint32_t k2;        // fixpoint: s5p27
+  uint32_t k3;        // fixpoint: s5p27
+  uint32_t k4_p1;     // fixpoint: s5p27, normal mode is k4, fisheye mode is p1
+  uint32_t k5_p2;     // fixpoint: s5p27, normal mode is k5 or unused, fisheye
+                      // mode is p2
+  uint32_t skew;      // fixpoint: s8p24
+} __attribute__((packed)) LensCoeff_t;
 
 #ifdef __cplusplus
 }
