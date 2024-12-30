@@ -1,4 +1,4 @@
-#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp>
 
 #include <chrono>
 #include <iostream>
@@ -31,11 +31,36 @@ class SipeedTOF_MSA010_Publisher : public rclcpp::Node {
     this->declare_parameter("device", "/dev/ttyUSB0");
     rclcpp::Parameter device_param = this->get_parameter("device");
     s = device_param.as_string();
-    std::cout << "use device: " << s << std::endl;
     pser = new Serial(s);
+    std::cout << "use device: " << s << std::endl;
+
+    ser << "AT+ISP=0\r";
+    do {
+      ser >> s;
+      std::cout << "AT+ISP=0: get dummy: " << s.size() << "\r";
+    } while(!s.empty());
+    std::cout << std::endl;
+    std::cout << "finish: " << "AT+ISP=0" << std::endl;
+
+    ser << "AT+DISP=1\r";
+    do {
+      ser >> s;
+      std::cout << "AT+DISP=1: get dummy: " << s.size() << "\r";
+    } while(!s.empty());
+    std::cout << std::endl;
+    std::cout << "finish: " << "AT+DISP=1" << std::endl;
+
+    ser << "AT+ISP=1\r";
+    do {
+      ser >> s;
+      std::cout << "AT+ISP=1: get dummy: " << s.size() << "\r";
+    } while(!s.empty());
+    std::cout << std::endl;
+    std::cout << "finish: " << "AT+ISP=1 " << s << std::endl;
 
     ser << "AT\r";
     ser >> s;
+    std::cout << "finish: " << "AT " << s << std::endl;
     if (s.compare("OK\r\n")) {
       // not this serial port
       return;
@@ -43,15 +68,19 @@ class SipeedTOF_MSA010_Publisher : public rclcpp::Node {
 
     ser << "AT+COEFF?\r";
     ser >> s;
+    std::cout << "finish: " << "AT+COEFF? " << s << std::endl;
     if (s.compare("+COEFF=1\r\nOK\r\n")) {
       // not this serial port
+      std::cout << "AT+COEFF error" << std::endl;
       return;
     }
 
     s = s.substr(14, s.length() - 14);
+    std::cout << "s.substr" << std::endl;
     if (s.length() == 0) {
       ser >> s;
     }
+    std::cout << "parse json" << std::endl;
     // cout << s << endl;
     cJSON *cparms = cJSON_ParseWithLength((const char *)s.c_str(), s.length());
     uint32_t tmp;
